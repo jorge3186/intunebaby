@@ -1,0 +1,36 @@
+description = 
+"""
+============================================================================
+-- ITB Config Server --
+
+Configuration Service for the ITB application architecture
+This config service needs to be started before any other service as this
+will provide confg items for the rest of the orchestrated services.
+============================================================================
+"""
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-vault-dependencies:${springVaultVersion}"
+	}
+}
+	
+dependencies {
+	implementation 			'org.springframework.cloud:spring-cloud-config-server'
+	implementation			'org.springframework.cloud:spring-cloud-starter-vault-config'
+	implementation 			'org.springframework.boot:spring-boot-starter-security'
+	implementation			'org.springframework.boot:spring-boot-starter-actuator'
+	implementation			'org.springframework.boot:spring-boot-starter-web'
+	
+    testImplementation 		"junit:junit:${junitVersion}"
+    testImplementation 		'org.springframework.boot:spring-boot-starter-test'
+}	
+
+bootJar {
+	baseName 		= 	'itb-config'
+	version 		= 	"${appVersion}"
+}

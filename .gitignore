@@ -3,3 +3,13 @@
 gradle/
 gradlew
 gradlew.bat
+bin/
+build/
+
+# eclipse
+.project
+.classpath
+.settings/
+
+# project specific files
+config.env

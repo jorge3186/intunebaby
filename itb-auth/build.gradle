@@ -1,0 +1,40 @@
+description = 
+"""
+============================================================================
+-- ITB Auth Server --
+
+Authorization Server for ITB. Single Sign On approach for all secured 
+resources associated with ITB.
+============================================================================
+"""
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-vault-dependencies:${springVaultVersion}"
+	}
+}
+	
+dependencies {
+	implementation 			'org.springframework.cloud:spring-cloud-starter-config'
+	implementation			'org.springframework.cloud:spring-cloud-starter-vault-config'
+	implementation			'org.springframework.cloud:spring-cloud-vault-config-databases'
+	implementation			'org.springframework.boot:spring-boot-starter-data-mongodb'	
+	implementation 			'org.springframework.boot:spring-boot-starter-security'
+	implementation			'org.springframework.cloud:spring-cloud-starter-oauth2'
+	implementation			'org.springframework.security:spring-security-jwt'
+	implementation			"org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springOAuthVersion}"
+	implementation			'org.springframework.boot:spring-boot-starter-actuator'
+	implementation			'org.springframework.boot:spring-boot-starter-web'
+	
+    testImplementation 		"junit:junit:${junitVersion}"
+    testImplementation 		'org.springframework.boot:spring-boot-starter-test'
+}	
+
+bootJar {
+	baseName 		= 	'itb-auth'
+	version 		= 	"${appVersion}"
+}

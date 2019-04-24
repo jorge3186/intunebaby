@@ -1,0 +1,5 @@
+server:  port: 0
+
+spring:  main:   banner-mode: "off"
+  application:
+    name: itb-config      output:    ansi:      enabled: ALWAYS           cloud:    vault:      application-name: itb-generic      authentication: TOKEN      uri: ${VAULT_URI}      token: ${VAULT_TOKEN}      scheme: ${VAULT_SCHEME}      kv:        enabled: true    management:  endpoints:    web:      exposure:        include:          - health          - info          - refresh          - shutdown          - beans          - env          - configprops          - loggers          - metrcis            ---# local deploymentspring:  profiles: local,native        cloud:    config:      server:        native:          search-locations:            - classpath:/dev-shared            ---# cloud deploymentsspring:  profiles: cloud    cloud:    config:      server:        git:          uri: ${CONFIG_GIT_URI}          username: ${CONFIG_GIT_USER}          password: ${CONFIG_GIT_PW}
