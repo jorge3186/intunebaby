@@ -1,12 +1,12 @@
 server:
   port: 0
-
+  
 spring:
   main:
    banner-mode: "off"
 
   application:
-    name: itb-auth
+    name: itb-discovery
     
   output:
     ansi:
@@ -21,15 +21,9 @@ spring:
       scheme: ${VAULT_SCHEME}
       kv:
         enabled: true
-      database:
-        enabled: true
-        role: users-readwrite
-        backend: database
-        username-property: spring.datasource.username
-        password-property: spring.datasource.password
         
-        
-    config:      fail-fast: true
+    config:
+      fail-fast: true
       uri: ${CONFIG_URI}
       username: ${CONFIG_USER}
       password: ${CONFIG_PW}
@@ -53,8 +47,8 @@ management:
           
 eureka:
   instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    hostname: ${DISCOVERY_HOST:localhost}
   client:
-    healthcheck:      enabled: true
-    service-url:
-      defaultZone: http://${DISCOVERY_HOST}:${DISCOVERY_PORT}/eureka
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka

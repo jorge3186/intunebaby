@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
-	
+
 	private Environment env;
 	
 	@Bean
@@ -31,7 +31,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/actuator/health").permitAll()
-			.antMatchers("/actuator/**").hasRole("CONFIGUSER")
+			.antMatchers("/**").hasRole("CONFIGUSER")
 			.anyRequest().authenticated()
 			.and()
 			.httpBasic()

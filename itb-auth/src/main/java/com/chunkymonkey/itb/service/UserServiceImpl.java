@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 						String.format("User with username %s already exists", u.getUsername()));
 			});
 		
-		logger.info(String.format("new user added with user name: %s", user.getUsername()));
+		logger.info(String.format("new user added with username: %s", user.getUsername()));
 		user.setPassword(encoder.encode(user.getPassword()));
 		return users.save(user);
 	}

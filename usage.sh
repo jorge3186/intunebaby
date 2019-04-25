@@ -76,11 +76,13 @@ function start_service() {
 	fi
 	if [ "$2" == "itb-discovery" ];
 	then
-		export DISCOVERY_URI=http://localhost:$port/eureka
+		export DISCOVERY_HOST=localhost
+		export DISCOVERY_PORT=$port
 	fi
 	if [ "$2" == "itb-auth" ];
 	then
-		export AUTH_URI=http://localhost:$port
+		export AUTH_HOST=localhost
+		export AUTH_PORT=$port
 	fi
 	
 	resp=$(wget --tries 50 --retry-connrefused "$1:$port/actuator/health" -q -O -)
@@ -124,6 +126,7 @@ then
 	if [ "$#" -eq 1 ];
 	then
 		build_service 'itb-config'
+		build_service 'itb-discovery'
 		build_service 'itb-auth'
 	else
 		for arg in ${@:2}
@@ -142,6 +145,7 @@ then
 	echo -e ''
 	start_service http://localhost 'itb-config'
 	update_env
+	start_service http://localhost 'itb-discovery'
 	start_service http://localhost 'itb-auth'
 fi
 

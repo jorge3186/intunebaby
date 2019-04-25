@@ -2,7 +2,10 @@ package com.chunkymonkey.itb.domain;
 
 import java.util.Collection;
 
+import javax.validation.constraints.Email;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,10 @@ public class ItbUser implements UserDetails {
 	private String username;
 	
 	private String password;
+	
+	@Indexed
+	@Email(message = "Email is not valid")
+	private String email;
 	
 	private Collection<? extends GrantedAuthority> authorities;
 
@@ -63,5 +70,13 @@ public class ItbUser implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

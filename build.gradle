@@ -34,7 +34,6 @@ subprojects {
 	sourceCompatibility = "${javaVersion}"
 	targetCompatibility = "${javaVersion}"
 	
-<<<<<<< HEAD
 	repositories {
 		mavenCentral()
 		maven { url 'http://repo.spring.io/snapshot' }
@@ -42,7 +41,4 @@ subprojects {
 		maven { url 'https://repo.spring.io/libs-snapshot' }
 		maven { url 'https://repo1.maven.org/maven2/' }
 	}
-	
-=======
->>>>>>> 4914a1229779908c65c45f05147bdd96e989bb2f
 }
