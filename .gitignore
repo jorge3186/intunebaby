@@ -1,8 +1,4 @@
 # gradle
-.gradle/
-gradle/
-gradlew
-gradlew.bat
 bin/
 build/
 
