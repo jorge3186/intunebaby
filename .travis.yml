@@ -6,4 +6,4 @@ jdk:
   
 script:
   - gradle assemble
-  - gradle build
+  - gradle test
