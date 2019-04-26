@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/sqshq/PiggyMetrics.svg?branch=master)](https://travis-ci.org/sqshq/PiggyMetrics)
-[![codecov.io](https://codecov.io/github/jorge3186/intunebaby/coverage.svg?branch=master)](https://codecov.io/github/jorge3186/intunebaby?branch=master)
+[![Build Status](https://travis-ci.com/jorge3186/intunebaby.svg?branch=develop)](https://travis-ci.com/jorge3186/intunebaby)
+[![codecov.io](https://codecov.io/gh/jorge3186/intunebaby/coverage.svg?branch=develop)](https://codecov.io/gh/jorge3186/intunebaby)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/jorge3186/intunebaby/blob/master/LICENCE)
 
 # InTune Baby

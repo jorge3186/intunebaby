@@ -4,6 +4,12 @@ install: true
 jdk:
   - oraclejdk8
   
+before_script:
+  - chmod +x gradlew
+  
 script:
   - ./gradlew assemble
   - ./gradlew test
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
