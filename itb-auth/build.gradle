@@ -28,11 +28,12 @@ dependencies {
 	implementation 			'org.springframework.boot:spring-boot-starter-security'
 	implementation			'org.springframework.cloud:spring-cloud-starter-oauth2'
 	implementation			'org.springframework.security:spring-security-jwt'
-	implementation			"org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springOAuthVersion}"
+	implementation			"org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springOauthVersion}"
 	implementation			'org.springframework.boot:spring-boot-starter-actuator'
 	implementation			'org.springframework.boot:spring-boot-starter-web'
 	
     testImplementation 		"junit:junit:${junitVersion}"
+    testImplementation		"org.mockito:mockito-core:${mockitoVersion}"
     testImplementation 		'org.springframework.boot:spring-boot-starter-test'
 }	
 

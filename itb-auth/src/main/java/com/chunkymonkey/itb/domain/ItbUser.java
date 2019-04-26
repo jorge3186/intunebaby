@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Document(collection = "users")
@@ -78,5 +79,30 @@ public class ItbUser implements UserDetails {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ItbUser))
+			return false;
+		ItbUser other = (ItbUser) obj;
+		if (getUsername() == null) {
+			if (other.getUsername() != null)
+				return false;
+		} else if (!getUsername().equals(other.getUsername()))
+			return false;
+		return true;
 	}
 }
