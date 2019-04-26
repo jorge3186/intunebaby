@@ -5,5 +5,5 @@ jdk:
   - oraclejdk8
   
 script:
-  - gradle assemble
-  - gradle test
+  - ./gradlew assemble
+  - ./gradlew test
