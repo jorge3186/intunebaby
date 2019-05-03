@@ -1,0 +1,43 @@
+server:
+  port: 0
+
+spring:
+  main:
+   banner-mode: "off"
+
+  application:
+    name: itb-config
+    
+  output:
+    ansi:
+      enabled: ALWAYS   
+    
+  cloud:
+    vault:
+      enabled: false
+
+    config:
+      server:
+        native:
+          search-locations:
+            - classpath:/dev-shared
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - refresh
+          - shutdown
+          - beans
+          - env
+          - configprops
+          - loggers
+          - metrcis
+         
+
+itb:
+  config-username: user
+  config-password: password
