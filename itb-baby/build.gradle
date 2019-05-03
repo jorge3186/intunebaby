@@ -1,0 +1,41 @@
+description = 
+"""
+============================================================================
+-- ITB Baby Server --
+
+The Baby service for the ITB architecture. This will hold information
+about the baby and his/her relationship with the application user.
+============================================================================
+"""
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-vault-dependencies:${springVaultVersion}"
+	}
+}
+	
+dependencies {
+	implementation 			'org.springframework.cloud:spring-cloud-starter-config'
+	implementation			'org.springframework.cloud:spring-cloud-vault-config-databases'
+	implementation			'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation			"com.sun.jersey:jersey-client:${jerseyVersion}"
+	implementation			'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation			'org.springframework.cloud:spring-cloud-starter-oauth2'
+	implementation 			'org.springframework.boot:spring-boot-starter-security'
+	implementation			"com.graphql-java:graphql-java:${graphQlVersion}"
+	implementation			'org.springframework.boot:spring-boot-starter-actuator'
+	implementation			'org.springframework.boot:spring-boot-starter-web'
+	implementation			"org.modelmapper:modelmapper:${modelMapperVersion}"
+	
+    testImplementation 		"junit:junit:${junitVersion}"
+    testImplementation 		'org.springframework.boot:spring-boot-starter-test'
+}	
+
+bootJar {
+	baseName 		= 	'itb-baby'
+	version 		= 	"${appVersion}"
+}

@@ -1,0 +1,46 @@
+server:
+  port: ${APP_PORT:8080}
+
+spring:
+  main:
+   banner-mode: "off"
+
+  application:
+    name: itb-gateway
+    
+  output:
+    ansi:
+      enabled: ALWAYS   
+      
+  cloud:
+    config:
+      fail-fast: true
+      uri: ${CONFIG_URI}
+      username: ${CONFIG_USER}
+      password: ${CONFIG_PW}
+      
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - refresh
+          - shutdown
+          - beans
+          - env
+          - configprops
+          - loggers
+          - metrcis
+
+          
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://${DISCOVERY_HOST}:${DISCOVERY_PORT}/eureka

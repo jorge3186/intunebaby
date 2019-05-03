@@ -1,6 +1,9 @@
 package com.chunkymonkey.itb.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
 
@@ -27,6 +30,18 @@ public class ItbUser implements UserDetails {
 	
 	private Collection<? extends GrantedAuthority> authorities;
 
+	public ItbUser() {}
+	
+	public ItbUser(String username, String password, String email, List<String> authorities) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.authorities = authorities == null ? 
+				new ArrayList<>() : authorities.stream()
+					.map(s -> new SimpleGrantedAuthority(s))
+					.collect(Collectors.toList());
+	}
+	
 	public String getUsername() {
 		return username;
 	}

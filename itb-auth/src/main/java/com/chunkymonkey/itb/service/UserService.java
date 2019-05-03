@@ -18,6 +18,8 @@ import com.chunkymonkey.itb.domain.ItbUser;
  */
 public interface UserService {
 
+	ItbUser findByUserName(String username);
+	
 	/**
 	 * Create a user for accessing the application.<br>
 	 * User names must be unique in order to be added

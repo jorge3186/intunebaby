@@ -1,0 +1,63 @@
+server:
+  port: 0
+
+spring:
+  main:
+   banner-mode: "off"
+   allow-bean-definition-overriding: true
+
+  application:
+    name: itb-baby
+    
+  output:
+    ansi:
+      enabled: ALWAYS   
+      
+  cloud:
+    vault:
+      application-name: itb-generic
+      authentication: TOKEN
+      uri: ${VAULT_URI}
+      token: ${VAULT_TOKEN}
+      scheme: ${VAULT_SCHEME}
+      kv:
+        enabled: true
+      database:
+        enabled: true
+        role: baby-readwrite
+        backend: database
+        username-property: spring.datasource.username
+        password-property: spring.datasource.password
+        
+        
+    config:
+      fail-fast: true
+      uri: ${CONFIG_URI}
+      username: ${CONFIG_USER}
+      password: ${CONFIG_PW}
+      
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - refresh
+          - shutdown
+          - beans
+          - env
+          - configprops
+          - loggers
+          - metrcis
+          
+          
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://${DISCOVERY_HOST}:${DISCOVERY_PORT}/eureka

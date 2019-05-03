@@ -41,7 +41,12 @@ function update_env() {
 function build_service() {
 	echo -e "$CS$GREEN-------------------------------------------$CE"
 	echo -e "$CS$GREEN--$CE $CS$YELLOWbuilding $1$CE"
-	gradle $1:clean $1:bootJar --info
+	if [ "$1" == "itb-commn" ];
+	then
+		gradle $1:clean $1:build --info
+	else
+		gradle $1:clean $1:bootJar --info
+	fi
 	echo -e "$CS$GREEN--$CE $CS$YELLOW$1 build complete$CE"
 	echo -e "$CS$GREEN-------------------------------------------$CE"
 }
@@ -125,9 +130,12 @@ if [ "$PROC" == "build" ];
 then
 	if [ "$#" -eq 1 ];
 	then
-		build_service 'itb-config'
+		build_service 'itb-common'  
+		build_service 'itb-config' 
 		build_service 'itb-discovery'
+		build_service 'itb-gateway' 
 		build_service 'itb-auth'
+		build_service 'itb-baby'
 	else
 		for arg in ${@:2}
 		do 
@@ -143,10 +151,22 @@ then
 	echo -e "$YELLOW ================================================ $CE"
 	
 	echo -e ''
-	start_service http://localhost 'itb-config'
-	update_env
-	start_service http://localhost 'itb-discovery'
-	start_service http://localhost 'itb-auth'
+	if [ "$#" -eq 1 ];
+	then
+		start_service http://localhost 'itb-config'
+		update_env
+		start_service http://localhost 'itb-discovery'
+		start_service http://localhost 'itb-auth'
+		
+		#start_service http://localhost 'itb-gateway' &
+		#start_service http://localhost 'itb-baby' &
+	else
+		update_env
+		for arg in ${@:2}
+		do 
+			start_service $arg
+		done
+	fi
 fi
 
 # run stop

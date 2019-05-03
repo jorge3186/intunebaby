@@ -1,0 +1,18 @@
+spring:
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: ${MONGO_DATABASE:baby_01d}
+
+
+security:
+  oauth2:
+    client:
+      client-id: itb-baby
+      client-credentials: ${itb.baby-password}
+      grant-type: client_credentials
+      scope: server
+    resource:
+      user-info-uri: http://${AUTH_HOST}:${AUTH_PORT}/v1/current
+      token-info-uri: http://${AUTH_HOST}:${AUTH_PORT}/oauth/check_token

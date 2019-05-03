@@ -18,6 +18,8 @@ help:
 	@echo '    VAULT_TOKEN={string}	# vault authentication token'
 	@echo '    VAULT_SCHEME={string}	# either http or https'
 	@echo ''
+	@echo '    APP_PORT={number}   # the port number to host the appplication'
+	@echo ''
 	@echo '===================================================================='
 	@echo 'Makefile options:'
 	@echo ''

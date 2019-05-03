@@ -1,0 +1,25 @@
+zuul:
+  ignored-services: '*'
+  routes:
+    auth:
+      path: /uaa/**
+      service-id: itb-auth
+      sensitive-headers:
+      
+    baby:
+      path: /baby/**
+      service-id: itb-baby
+      sensitive-headers:
+      
+      
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+      
+                    
+ribbon:
+  ConnectTimeout: 5000
+  ReadTimeout: 120000

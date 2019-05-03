@@ -1,14 +1,13 @@
 package com.chunkymonkey.itb.service;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.chunkymonkey.itb.domain.ItbUser;
 import com.chunkymonkey.itb.repository.UserRepository;
@@ -26,6 +25,13 @@ public class UserServiceImpl implements UserService {
 	public UserServiceImpl(UserRepository users, PasswordEncoder encoder) {
 		this.users = users;
 		this.encoder = encoder;
+	}
+	
+	@Override
+	public ItbUser findByUserName(String username) {
+		Assert.notNull(username, "Username cannot be null");
+		return users.findById(username)
+			.orElse(null);
 	}
 	
 	@Override

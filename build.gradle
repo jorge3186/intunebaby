@@ -9,6 +9,9 @@ subprojects {
 			springOauthVersion			=	'2.1.3.RELEASE'
 			springVaultVersion			=	'2.1.1.RELEASE'
 			modelMapperVersion			=	'2.3.0'
+			jerseyVersion				=	'1.19.1'
+			spqrVersion					=	'0.9.9'
+			graphQlVersion				=	'12.0'
 			junitVersion				=	'4.12'
 			mockitoVersion				=	'2.27.0'
 			
@@ -35,17 +38,17 @@ subprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'jacoco'
-
-	sourceCompatibility = "${javaVersion}"
-	targetCompatibility = "${javaVersion}"
 	
 	repositories {
 		mavenCentral()
 		maven { url 'http://repo.spring.io/snapshot' }
 		maven { url 'http://repo.spring.io/milestone' }
 		maven { url 'https://repo.spring.io/libs-snapshot' }
-		maven { url 'https://repo1.maven.org/maven2/' }
+		maven { url 'https://repo1.maven.org/maven2' }
 	}
+
+	sourceCompatibility = "${javaVersion}"
+	targetCompatibility = "${javaVersion}"
 	
 	jacocoTestReport {
 		reports {
