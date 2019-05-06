@@ -91,6 +91,13 @@ public class OAuth2ServerConfigurer extends AuthorizationServerConfigurerAdapter
 			.authorizedGrantTypes("client_credentials", "refresh_token")
 			.scopes("server")
 			
+			// itb-growth service
+			.and()
+			.withClient("itb-sleep")
+			.secret(encoder.encode(env.getProperty("itb.growth-password")))
+			.authorizedGrantTypes("client_credentials", "refresh_token")
+			.scopes("server")
+			
 			// itb-notify service
 			.and()
 			.withClient("itb-notify")

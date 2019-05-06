@@ -38,6 +38,7 @@ dependencies {
     testImplementation 		"junit:junit:${junitVersion}"
     testImplementation		"org.mockito:mockito-core:${mockitoVersion}"
     testImplementation 		'org.springframework.boot:spring-boot-starter-test'
+    testImplementation		"de.flapdoodle.embed:de.flapdoodle.embed.mongo:${embededMongoVersion}"
 }	
 
 bootJar {

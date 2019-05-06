@@ -1,0 +1,40 @@
+itb:
+  config-username: user
+  config-password: password
+  
+  baby-password: password
+  diapers-password: password
+  feedings-password: password
+  growth-password: password
+  sleep-password: password
+  notify-password: password
+  
+  verifier-key: |
+    -----BEGIN PUBLIC KEY-----
+    MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHC77pKJerQRjU/XnCcRigMeRUl2
+    7hF6uMor4vthkNaasWN3hLUGpao5w/Ar5v5l/YY1AKDtlsao36yMiRFnHUSEAUzm
+    VJwW1rjM6BffbPt1MxbPgb0O8imReDJeTxnI+j9rMTKEaAONO0lz9J0c2UsG0W44
+    AYWzHMG5HYDK9BhPAgMBAAE=
+    -----END PUBLIC KEY-----
+    
+  signing-key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIICWwIBAAKBgHC77pKJerQRjU/XnCcRigMeRUl27hF6uMor4vthkNaasWN3hLUG
+    pao5w/Ar5v5l/YY1AKDtlsao36yMiRFnHUSEAUzmVJwW1rjM6BffbPt1MxbPgb0O
+    8imReDJeTxnI+j9rMTKEaAONO0lz9J0c2UsG0W44AYWzHMG5HYDK9BhPAgMBAAEC
+    gYAQjnk+SjScJ4vCcx762eeUB6kTXgUeyhBDmOhwFOcprXRp8E6sK3q/Ila1ei0l
+    paLzR+t8twgSyxB2jfk/dg5lJG9Rq5lXLYRf489L7u67XEmwbavQtdVZjgI0c6ow
+    QfjN2NpAHs6KAdVsJE0Ivjc1lLm5TghnpHuCFHXQGseD6QJBAL19WLGS0uUp8VnP
+    wSbw3iGKAQ/kIFl6HeFvZV8tENbH9YVc0WqtYw9DFQa533DAy1i7UHS9zG9dJq4O
+    UICJH3MCQQCYTbFDOcXR6NoQGDZs4Jd89wXcOl35lVGutf2lj/2cf3qo8hAOg5ND
+    ZAE1GrCbNSZJsx6zO+ml9/ooBtk/jLS1AkB3P1nArlBwDRwo0/iO5Ag2fR27/Wlq
+    RdJmG29lHPw63i2hls7nXmQ3p5Sk3fZCg+G0XnT8crEj6DA+Wx3INgMHAkAX2utt
+    5Smn9DnblX9I1HDF4Qco9HdttUai/9xnx0Lo9UqoFaoQK+mv/4T05WZOGSgTGRww
+    5Kx3E306McBrZMWVAkEAmJFx9FaMGBOHK80ykSuFkqN6KnWI/3rNPoNE/MDVK1B0
+    hWlAc0JgVSGX208LvydXdWmr6rBkPggy4yPAAB9oBQ==
+    -----END RSA PRIVATE KEY-----
+  
+spring:
+  data:
+    mongodb:
+      port: 0
