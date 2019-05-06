@@ -1,6 +1,6 @@
 package com.chunkymonkey.itb.domain;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,7 +13,7 @@ public class BabyEntity {
 	
 	private String accountName;
 	
-	private Date birthday;
+	private LocalDateTime birthday;
 	
 	private String firstName;
 	
@@ -39,11 +39,11 @@ public class BabyEntity {
 		this.accountName = accountName;
 	}
 
-	public Date getBirthday() {
+	public LocalDateTime getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(LocalDateTime birthday) {
 		this.birthday = birthday;
 	}
 

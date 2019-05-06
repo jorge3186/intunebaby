@@ -71,6 +71,18 @@ public class UserServiceTest {
 		
 	}
 	
+	@Test
+	public void findUserByUserName() {
+		ItbUser user = tested.findByUserName("existing-user");
+		Assert.assertTrue("email@example.com".equals(user.getEmail()));
+	}
+	
+	@Test
+	public void findNonUserByName() {
+		ItbUser user = tested.findByUserName("empty-user");
+		Assert.assertTrue(user == null);
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void testExistingUserCreate() {
 		tested.create(existingUser().get());

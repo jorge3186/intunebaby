@@ -27,14 +27,13 @@ dependencies {
 	implementation			'org.springframework.cloud:spring-cloud-starter-oauth2'
 	implementation 			'org.springframework.boot:spring-boot-starter-security'
 	implementation			"com.graphql-java:graphql-java:${graphQlVersion}"
+	implementation			"io.leangen.graphql:spqr:${spqrVersion}"
 	implementation			'org.springframework.boot:spring-boot-starter-actuator'
 	implementation			'org.springframework.boot:spring-boot-starter-web'
-	implementation			"org.modelmapper:modelmapper:${modelMapperVersion}"
 	
     testImplementation 		"junit:junit:${junitVersion}"
     testImplementation		"org.mockito:mockito-core:${mockitoVersion}"
     testImplementation 		'org.springframework.boot:spring-boot-starter-test'
-    testImplementation		'org.springframework.security:spring-security-test'
     testImplementation		"de.flapdoodle.embed:de.flapdoodle.embed.mongo:${embededMongoVersion}"
 }	
 
