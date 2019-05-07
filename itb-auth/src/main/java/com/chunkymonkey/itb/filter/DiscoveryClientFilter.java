@@ -24,7 +24,7 @@ public class DiscoveryClientFilter extends ClientFilter {
 		String encoded = Base64Utils.encodeToString(auth.getBytes());
 		cr.getHeaders().add("Authorization", String.format("Basic %s", encoded));
 		
-		return getNext().handle(cr);
+		return getNext() == null ? null : getNext().handle(cr);
 	}
 
 }

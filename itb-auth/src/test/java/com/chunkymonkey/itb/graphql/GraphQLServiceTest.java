@@ -1,7 +1,12 @@
 package com.chunkymonkey.itb.graphql;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,8 +14,13 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import com.chunkymonkey.itb.config.GraphQLConfigurer;
 import com.chunkymonkey.itb.domain.ItbUser;
@@ -83,6 +93,19 @@ public class GraphQLServiceTest {
 	}
 	
 	@Test
+	public void testNullAuthentication() {
+		ExecutionResult result = tested.execute("query { me{ details name credentials } }");
+		Assert.assertTrue(result.getData().toString().contains("me=null"));
+	}
+	
+	@Test
+	public void testValidAuthentication() {
+		SecurityContextHolder.getContext().setAuthentication(getAuth());
+		ExecutionResult result = tested.execute("query { me{ principal details name } }");
+		Assert.assertTrue(result.getData().toString().contains("principal={authorities=[ROLE_USER], username=test}"));
+	}
+	
+	@Test
 	public void testUserByUsername() {
 		ExecutionResult result = tested.execute("query { findByUsername(username: \"my.user\") { username email authorities } }");
 		Assert.assertTrue(result.getData().toString().contains("email=my.user@example.com"));
@@ -118,7 +141,6 @@ public class GraphQLServiceTest {
 		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
 		ExecutionResult result = tested.execute("mutation { delete(user: "
 				+ "{ username: \"my.user\", password: \"pw\", email: \"my.emal@exmaple.com\", authorities: [\"ROLE_USER\", \"ROLE_YOURMOM\"] }) }");
-		System.out.println(result.getData().toString());
 		Assert.assertTrue(result.getData().toString().contains("delete=my.user"));
 		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
 	}
@@ -127,7 +149,6 @@ public class GraphQLServiceTest {
 	public void testDeleteUserByUsername() {
 		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
 		ExecutionResult result = tested.execute("mutation { deleteByUsername(username: \"my.user\") }");
-		System.out.println(result.getData().toString());
 		Assert.assertTrue(result.getData().toString().contains("deleteByUsername=my.user"));
 		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
 	}
@@ -149,5 +170,28 @@ public class GraphQLServiceTest {
 		u.setUsername("ext.user");
 		u.setEmail("ext.user@example.com");
 		return u;
+	}
+	
+	private OAuth2Authentication getAuth() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		
+		Map<String, String> requestParameters = Collections.emptyMap();
+        boolean approved = true;
+        String redirectUrl = null;
+        Set<String> responseTypes = Collections.emptySet();
+        Map<String, Serializable> extensionProperties = Collections.emptyMap();
+        Set<String> scopes = new HashSet<>();
+        scopes.add("server");
+        Set<String> resourceIds = new HashSet<>();
+        resourceIds.add("itb-auth");
+		 
+		OAuth2Request req = new OAuth2Request(requestParameters, "test", null, approved, scopes,
+                resourceIds, redirectUrl, responseTypes, extensionProperties);
+		User princ = new User("test", "password", true, true, true, true, authorities);
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
+        OAuth2Authentication auth = new OAuth2Authentication(req, authenticationToken);
+        
+        return auth;
 	}
 }

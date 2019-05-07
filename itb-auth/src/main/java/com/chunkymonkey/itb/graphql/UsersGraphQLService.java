@@ -1,12 +1,15 @@
 package com.chunkymonkey.itb.graphql;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +39,21 @@ public class UsersGraphQLService {
 		if (auth != null && OAuth2Authentication.class.isAssignableFrom(auth.getClass()))
 			return new ItbAuthentication((OAuth2Authentication)auth);
 		return null;
+	}
+	
+	@GraphQLQuery(description = "Get the principal of the current user")
+	public Map<String, Object> principal(@GraphQLContext ItbAuthentication authentication) {
+		Map<String, Object> map = new HashMap<>();
+		if (authentication != null) {
+			Object princ = authentication.getPrincipal();
+			if (princ != null && princ instanceof User) {
+				User user = (User)princ;
+				map.put("username", user.getUsername());
+				map.put("authorities", user.getAuthorities() == null ? new ArrayList<>() : 
+					user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList()));
+			}
+		}
+		return map;
 	}
 	
 	@GraphQLQuery(description = "Fetch a user by username")
