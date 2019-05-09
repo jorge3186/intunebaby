@@ -29,7 +29,18 @@ public class BabyGraphQLService {
 	}
 	
 	@GraphQLMutation(description = "Create a baby for the given user")
-	public BabyEntity createBaby(@GraphQLArgument(name = "baby") BabyInput baby) {
+	public BabyEntity create(@GraphQLArgument(name = "baby") BabyInput baby) {
 		return babies.create(baby.toBaby());
+	}
+	
+	@GraphQLMutation(description = "Update a baby for the given user")
+	public BabyEntity update(@GraphQLArgument(name = "baby") BabyInput baby) {
+		return babies.update(baby.toBaby());
+	}
+	
+	@GraphQLMutation(description = "Delete a baby for the given user")
+	public boolean delete(@GraphQLArgument(name = "baby") BabyInput baby) {
+		babies.delete(baby.toBaby());
+		return true;
 	}
 }

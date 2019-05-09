@@ -87,7 +87,7 @@ build: testconfig buildsrc
 	
 ## start all services
 startsrc:
-	@usage.sh start
+	@usage.sh start $(SERVICES)
 start: testconfig startsrc
 
 

@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.chunkymonkey.itb.constants.SecurityConstants;
 import com.chunkymonkey.itb.domain.BabyEntity;
 
 public interface BabyService {
 
-	@PreAuthorize(SecurityConstants.SERVER_SCOPE)
+	@PreAuthorize("#oauth2.hasScope('server') or #baby.accountName == authentication.name")
 	BabyEntity create(BabyEntity baby);
 	
-	@PreAuthorize(SecurityConstants.SERVER_SCOPE)
+	@PreAuthorize("#oauth2.hasScope('server') or #baby.accountName == authentication.name")
 	BabyEntity update(BabyEntity baby);
 	
-	@PreAuthorize(SecurityConstants.SERVER_SCOPE)
-	void delete(String babyId);
+	@PreAuthorize("#oauth2.hasScope('server') or #baby.accountName == authentication.name")
+	void delete(BabyEntity baby);
 	
+	@PreAuthorize("isAuthenticated() and #username == authentication.name")
 	List<BabyEntity> getBabiesForUser(String username);
 }

@@ -72,7 +72,7 @@ public class BabyInput {
 		b.setAccountName(getAccountName());
 		b.setFirstName(getFirstName());
 		b.setMiddleName(getMiddleName());
-		b.setBirthday(LocalDateTime.parse(getBirthday()));
+		b.setBirthday(getBirthday() == null ? null : LocalDateTime.parse(getBirthday()));
 		b.setLastName(getLastName());
 		b.setGender(Gender.forValue(getGender()));
 		return b;

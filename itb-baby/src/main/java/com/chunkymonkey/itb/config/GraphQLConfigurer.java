@@ -22,10 +22,14 @@ private final BabyGraphQLService graphQLService;
 	
 	@Bean
 	public GraphQL graphQL() {
-		GraphQLSchema schema = new GraphQLSchemaGenerator()
+		return GraphQL.newGraphQL(graphQLSchema()).build();
+	}
+	
+	@Bean 
+	public GraphQLSchema graphQLSchema() {
+		return new GraphQLSchemaGenerator()
 				.withOperationsFromSingleton(graphQLService)
 				.generate();
-		return GraphQL.newGraphQL(schema).build();
 	}
 	
 }

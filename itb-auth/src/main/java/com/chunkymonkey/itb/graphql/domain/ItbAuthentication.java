@@ -13,10 +13,10 @@ public class ItbAuthentication {
 	private Object credentials;
 	
 	public ItbAuthentication(OAuth2Authentication oauth) {
-		principal = oauth.getPrincipal();
-		details = oauth.getDetails();
-		name = oauth.getName();
-		credentials = oauth.getCredentials();
+		setPrincipal(oauth.getPrincipal());
+		setDetails(oauth.getDetails());
+		setName(oauth.getName());
+		setCredentials(oauth.getCredentials());
 	}
 
 	public Object getPrincipal() {

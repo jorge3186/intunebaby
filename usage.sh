@@ -34,6 +34,27 @@ function update_env() {
 	local config_resp=$(curl --header "X-Vault-Token: $VAULT_TOKEN" --request GET  "$VAULT_URI/v1/secret/data/itb-generic")
 	export CONFIG_USER=$(echo $config_resp | jq '.data.data."itb.config-username"' | tr -d '"')
 	export CONFIG_PW=$(echo $config_resp | jq '.data.data."itb.config-password"' | tr -d '"')
+	
+	local config_pid=$(jcmd | grep 'itb-config-' | awk '{print $1}')
+	local discovery_pid=$(jcmd | grep 'itb-discovery-' | awk '{print $1}')
+	local auth_pid=$(jcmd | grep 'itb-auth-' | awk '{print $1}')
+	
+	if [ "$config_pid" != "" ]; then
+		local config_port=$(netstat -a -n -o | grep $config_pid | grep '[::]:' | awk '{print $2}' | sed -En s/\\[::\\]://p)
+		export CONFIG_URI=http://localhost:$config_port
+	fi
+	
+	if [ "$discovery_pid" != "" ]; then
+		local discovery_port=$(netstat -a -n -o | grep $dscovery_pid | grep '[::]:' | awk '{print $2}' | sed -En s/\\[::\\]://p)
+		export DISCOVERY_HOST=localhost
+		export DISCOVERY_PORT=$discovery_port
+	fi
+
+	if [ "$auth_pid" != "" ]; then
+		local auth_port=$(netstat -a -n -o | grep $auth_pid | grep '[::]:' | awk '{print $2}' | sed -En s/\\[::\\]://p)
+		export AUTH_HOST=localhost
+		export AUTH_PORT=$auth_port
+	fi
 }
 
 ###########################################################
@@ -41,12 +62,7 @@ function update_env() {
 function build_service() {
 	echo -e "$CS$GREEN-------------------------------------------$CE"
 	echo -e "$CS$GREEN--$CE $CS$YELLOWbuilding $1$CE"
-	if [ "$1" == "itb-commn" ];
-	then
-		gradle $1:clean $1:build --info
-	else
-		gradle $1:clean $1:bootJar --info
-	fi
+	gradle $1:clean $1:bootJar --info
 	echo -e "$CS$GREEN--$CE $CS$YELLOW$1 build complete$CE"
 	echo -e "$CS$GREEN-------------------------------------------$CE"
 }
@@ -130,7 +146,6 @@ if [ "$PROC" == "build" ];
 then
 	if [ "$#" -eq 1 ];
 	then
-		build_service 'itb-common'  
 		build_service 'itb-config' 
 		build_service 'itb-discovery'
 		build_service 'itb-gateway' 
@@ -158,13 +173,13 @@ then
 		start_service http://localhost 'itb-discovery'
 		start_service http://localhost 'itb-auth'
 		
-		#start_service http://localhost 'itb-gateway' &
-		#start_service http://localhost 'itb-baby' &
+		start_service http://localhost 'itb-gateway' &
+		start_service http://localhost 'itb-baby' &
 	else
 		update_env
 		for arg in ${@:2}
 		do 
-			start_service $arg
+			start_service http://localhost $arg &
 		done
 	fi
 fi

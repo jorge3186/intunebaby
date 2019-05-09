@@ -93,7 +93,7 @@ public class OAuth2ServerConfigurer extends AuthorizationServerConfigurerAdapter
 			
 			// itb-growth service
 			.and()
-			.withClient("itb-sleep")
+			.withClient("itb-growth")
 			.secret(encoder.encode(env.getProperty("itb.growth-password")))
 			.authorizedGrantTypes("client_credentials", "refresh_token")
 			.scopes("server")

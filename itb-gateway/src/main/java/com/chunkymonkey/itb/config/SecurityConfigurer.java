@@ -30,9 +30,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/actuator/health").permitAll()
-			.antMatchers("/actuator/**").hasRole("CONFIGUSER")
-			.anyRequest().permitAll()
+			.regexMatchers("(.*)\\/actuator\\/(?!health).*").hasRole("CONFIGUSER")
+			.antMatchers("/**").permitAll()
 			.and()
 			.httpBasic()
 			.and()

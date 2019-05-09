@@ -13,6 +13,15 @@ spring:
       enabled: ALWAYS   
       
   cloud:
+    vault:
+      application-name: itb-generic
+      authentication: TOKEN
+      uri: ${VAULT_URI}
+      token: ${VAULT_TOKEN}
+      scheme: ${VAULT_SCHEME}
+      kv:
+        enabled: true
+  
     config:
       fail-fast: true
       uri: ${CONFIG_URI}

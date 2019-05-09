@@ -23,17 +23,21 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+import graphql.schema.GraphQLSchema;
 
 public class GraphControllerTest {
 
 	private GraphQL graphQL;
+	
+	private GraphQLSchema schema;
 	
 	private GraphController tested;
 	
 	@Before
 	public void setup() {
 		graphQL = Mockito.mock(GraphQL.class);
-		tested = new GraphController(graphQL);
+		schema = Mockito.mock(GraphQLSchema.class);
+		tested = new GraphController(graphQL, schema);
 		
 		Mockito.when(graphQL.execute(Mockito.anyString()))
 			.thenAnswer(new Answer<ExecutionResult>() {
@@ -42,6 +46,8 @@ public class GraphControllerTest {
 					String init = invocation.getArgument(0);
 					if ("show errors".equals(init)) {
 						return errors();
+					} else if ("empty errors".equals(init)) {
+						return emptyResponse();
 					} else {
 						return validResponse();
 					}
@@ -53,6 +59,12 @@ public class GraphControllerTest {
 		ResponseEntity<Object> obj = tested.graphQL("show errors");
 		Assert.assertTrue(HttpStatus.BAD_REQUEST.equals(obj.getStatusCode()));
 		Assert.assertTrue(new ObjectMapper().writeValueAsString(obj.getBody()).contains("\"errorType\":\"InvalidSyntax\""));
+	}
+	
+	@Test
+	public void testEmptyErrors() throws JsonProcessingException {
+		ResponseEntity<Object> obj = tested.graphQL("empty errors");
+		Assert.assertTrue(HttpStatus.OK.equals(obj.getStatusCode()));
 	}
 	
 	@Test
@@ -127,6 +139,35 @@ public class GraphControllerTest {
 				m.put("data2", "value2");
 				m.put("data3", "value3");
 				return (T)m;
+			}
+
+			@Override
+			public Map<Object, Object> getExtensions() {
+				return null;
+			}
+
+			@Override
+			public Map<String, Object> toSpecification() {
+				Map<String, Object> m = new HashMap<>();
+				m.put("spec1", "val1");
+				m.put("spec2", "val2");
+				return m;
+			}
+			
+		};
+	}
+	
+	private ExecutionResult emptyResponse() {
+		return new ExecutionResult() {
+
+			@Override
+			public List<GraphQLError> getErrors() {
+				return new ArrayList<>();
+			}
+
+			@Override
+			public <T> T getData() {
+				return null;
 			}
 
 			@Override

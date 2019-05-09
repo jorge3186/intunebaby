@@ -36,12 +36,21 @@ public class BabyServiceImpl implements BabyService {
 
 	@Override
 	public BabyEntity update(BabyEntity baby) {
-		return babies.save(baby);
+		BabyEntity entity = babies.findById(baby.getId())
+			.orElseThrow(() -> new IllegalArgumentException(String.format("No baby found with id: %s", baby.getId())));
+		entity.setBirthday(baby.getBirthday());
+		entity.setFirstName(baby.getFirstName());
+		entity.setMiddleName(baby.getMiddleName());
+		entity.setLastName(baby.getLastName());
+		entity.setGender(baby.getGender());
+		return babies.save(entity);
 	}
 
 	@Override
-	public void delete(String babyId) {
-		babies.deleteById(babyId);
+	public void delete(BabyEntity baby) {
+		BabyEntity entity = babies.findById(baby.getId())
+				.orElseThrow(() -> new IllegalArgumentException(String.format("No baby found with id: %s", baby.getId())));
+		babies.delete(entity);
 	}
 
 	@Override

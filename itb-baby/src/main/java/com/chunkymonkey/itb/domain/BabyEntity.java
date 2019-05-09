@@ -1,5 +1,6 @@
 package com.chunkymonkey.itb.domain;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -9,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BabyEntity {
 
 	@Id
-	private String id;
+	private BigInteger id;
 	
 	private String accountName;
 	
@@ -23,11 +24,11 @@ public class BabyEntity {
 	
 	private Gender gender;
 
-	public String getId() {
+	public BigInteger getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 
