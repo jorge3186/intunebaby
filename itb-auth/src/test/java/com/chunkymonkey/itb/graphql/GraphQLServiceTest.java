@@ -26,7 +26,6 @@ import com.chunkymonkey.itb.config.GraphQLConfigurer;
 import com.chunkymonkey.itb.domain.ItbUser;
 import com.chunkymonkey.itb.service.UserService;
 
-import graphql.ExecutionResult;
 import graphql.GraphQL;
 
 public class GraphQLServiceTest {
@@ -94,20 +93,20 @@ public class GraphQLServiceTest {
 	
 	@Test
 	public void testNullAuthentication() {
-		ExecutionResult result = tested.execute("query { me{ details name credentials } }");
+		var result = tested.execute("query { me{ details name credentials } }");
 		Assert.assertTrue(result.getData().toString().contains("me=null"));
 	}
 	
 	@Test
 	public void testValidAuthentication() {
 		SecurityContextHolder.getContext().setAuthentication(getAuth());
-		ExecutionResult result = tested.execute("query { me{ principal details name } }");
+		var result = tested.execute("query { me{ principal details name } }");
 		Assert.assertTrue(result.getData().toString().contains("principal={authorities=[ROLE_USER], username=test}"));
 	}
 	
 	@Test
 	public void testUserByUsername() {
-		ExecutionResult result = tested.execute("query { findByUsername(username: \"my.user\") { username email authorities } }");
+		var result = tested.execute("query { findByUsername(username: \"my.user\") { username email authorities } }");
 		Assert.assertTrue(result.getData().toString().contains("email=my.user@example.com"));
 		
 		result = tested.execute("query { findByUsername(username: \"ext.user\") { username email authorities } }");
@@ -120,7 +119,7 @@ public class GraphQLServiceTest {
 	
 	@Test
 	public void testCreateUser() {
-		ExecutionResult result = tested.execute("mutation { create(user: "
+		var result = tested.execute("mutation { create(user: "
 				+ "{ username: \"my.user\", password: \"pw\", email: \"my.emal@exmaple.com\", authorities: [\"ROLE_USER\", \"ROLE_YOURMOM\"] }) "
 				+ "{ username email authorities } }");
 		Assert.assertTrue(result.getData().toString().contains("ROLE_YOURMOM"));
@@ -128,7 +127,7 @@ public class GraphQLServiceTest {
 	
 	@Test
 	public void testUpdateUser() {
-		ExecutionResult result = tested.execute("mutation { update(user: "
+		var result = tested.execute("mutation { update(user: "
 				+ "{ username: \"my.user\", password: \"updatedPW\", email: \"updated@exmaple.com\", authorities: [\"ROLE_USER\", \"ROLE_HISMOM\"] }) "
 				+ "{ username email authorities } }");
 		Assert.assertTrue(result.getData().toString().contains("username=my.user"));
@@ -139,7 +138,7 @@ public class GraphQLServiceTest {
 	@Test
 	public void testDeleteUser() {
 		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
-		ExecutionResult result = tested.execute("mutation { delete(user: "
+		var result = tested.execute("mutation { delete(user: "
 				+ "{ username: \"my.user\", password: \"pw\", email: \"my.emal@exmaple.com\", authorities: [\"ROLE_USER\", \"ROLE_YOURMOM\"] }) }");
 		Assert.assertTrue(result.getData().toString().contains("delete=my.user"));
 		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
@@ -148,17 +147,17 @@ public class GraphQLServiceTest {
 	@Test
 	public void testDeleteUserByUsername() {
 		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
-		ExecutionResult result = tested.execute("mutation { deleteByUsername(username: \"my.user\") }");
+		var result = tested.execute("mutation { deleteByUsername(username: \"my.user\") }");
 		Assert.assertTrue(result.getData().toString().contains("deleteByUsername=my.user"));
 		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
 	}
 	
 	private ItbUser newUser() {
-		List<GrantedAuthority> grants = new ArrayList<>();
+		var grants = new ArrayList<GrantedAuthority>();
 		grants.add(new SimpleGrantedAuthority("ROLE_USER"));
 		grants.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		
-		ItbUser u = new ItbUser();
+		var u = new ItbUser();
 		u.setUsername("my.user");
 		u.setEmail("my.user@example.com");
 		u.setAuthorities(grants);
@@ -166,31 +165,31 @@ public class GraphQLServiceTest {
 	}
 	
 	private ItbUser userNoAuthorities() {
-		ItbUser u = new ItbUser();
+		var u = new ItbUser();
 		u.setUsername("ext.user");
 		u.setEmail("ext.user@example.com");
 		return u;
 	}
 	
 	private OAuth2Authentication getAuth() {
-		List<GrantedAuthority> authorities = new ArrayList<>();
+		var authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		
 		Map<String, String> requestParameters = Collections.emptyMap();
-        boolean approved = true;
+        var approved = true;
         String redirectUrl = null;
         Set<String> responseTypes = Collections.emptySet();
         Map<String, Serializable> extensionProperties = Collections.emptyMap();
-        Set<String> scopes = new HashSet<>();
+        var scopes = new HashSet<String>();
         scopes.add("server");
-        Set<String> resourceIds = new HashSet<>();
+        var resourceIds = new HashSet<String>();
         resourceIds.add("itb-auth");
 		 
-		OAuth2Request req = new OAuth2Request(requestParameters, "test", null, approved, scopes,
+		var req = new OAuth2Request(requestParameters, "test", null, approved, scopes,
                 resourceIds, redirectUrl, responseTypes, extensionProperties);
-		User princ = new User("test", "password", true, true, true, true, authorities);
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
-        OAuth2Authentication auth = new OAuth2Authentication(req, authenticationToken);
+		var princ = new User("test", "password", true, true, true, true, authorities);
+		var authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
+        var auth = new OAuth2Authentication(req, authenticationToken);
         
         return auth;
 	}

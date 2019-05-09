@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chunkymonkey.itb.domain.ItbUserError;
 
-import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
@@ -36,7 +35,7 @@ public class GraphController {
 		if (graphRequest == null)
 			return ResponseEntity.badRequest().build();
 		
-		ExecutionResult result = graphQL.execute(graphRequest);
+		var result = graphQL.execute(graphRequest);
 		
 		if (result.getErrors() != null && !result.getErrors().isEmpty())
 			return handleError(result.getErrors());
@@ -50,7 +49,7 @@ public class GraphController {
 	}
 	
 	private ResponseEntity<Object> handleError(List<GraphQLError> errors) {
-		ItbUserError err = new ItbUserError();
+		var err = new ItbUserError();
 		if (errors.get(0).getMessage().contains("Access is denied")) {
 			err.setStatus(HttpStatus.FORBIDDEN);
 			err.setMessage(errors.get(0).getErrorType().toString());

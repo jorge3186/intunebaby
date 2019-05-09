@@ -24,13 +24,13 @@ public class DiscoveryConfigurer {
 	
 	@Bean
 	public DiscoveryClientOptionalArgs discoveryArgs() {
-		DiscoveryClientOptionalArgs args = new DiscoveryClientOptionalArgs();
+		var args = new DiscoveryClientOptionalArgs();
 		args.setAdditionalFilters(authFilters());
 		return args;
 	}
 	
 	public List<ClientFilter> authFilters() {
-		List<ClientFilter> filters = new ArrayList<>();
+		var filters = new ArrayList<ClientFilter>();
 		filters.add(new DiscoveryClientFilter(
 				env.getProperty("itb.config-username"), env.getProperty("itb.config-password")));
 		return filters;

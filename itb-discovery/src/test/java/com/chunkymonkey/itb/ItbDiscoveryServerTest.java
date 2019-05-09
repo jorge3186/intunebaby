@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -34,7 +33,7 @@ public class ItbDiscoveryServerTest {
 	@Test
 	public void testActuatorEndpoints() {
 		// allow all access to /actuator/health
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
 		Assert.assertTrue(HttpStatus.OK.equals(resp.getStatusCode()));
 		Assert.assertTrue(resp.getBody().contains("UP"));
 		
@@ -52,7 +51,7 @@ public class ItbDiscoveryServerTest {
 	@Test
 	public void testEurekaEndpoints() {
 		// deny access to eureka UI
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/eureka" , String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/eureka" , String.class);
 		Assert.assertTrue(HttpStatus.UNAUTHORIZED.equals(resp.getStatusCode()));
 		
 		// access allowed with basic auth

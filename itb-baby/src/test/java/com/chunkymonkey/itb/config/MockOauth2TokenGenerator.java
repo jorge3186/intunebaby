@@ -29,39 +29,39 @@ public class MockOauth2TokenGenerator {
 	
 	public OAuth2AccessToken generateClientToken(String clientId, Collection<? extends GrantedAuthority> authorities) {
 		Map<String, String> requestParameters = Collections.emptyMap();
-        boolean approved = true;
+        var approved = true;
         String redirectUrl = null;
         Set<String> responseTypes = Collections.emptySet();
         Map<String, Serializable> extensionProperties = Collections.emptyMap();
-        Set<String> scopes = new HashSet<>();
+        var scopes = new HashSet<String>();
         scopes.add("server");
-        Set<String> resourceIds = new HashSet<>();
+        var resourceIds = new HashSet<String>();
         resourceIds.add("itb-baby");
 		 
-		OAuth2Request req = new OAuth2Request(requestParameters, clientId, authorities, approved, scopes,
+		var req = new OAuth2Request(requestParameters, clientId, authorities, approved, scopes,
                 resourceIds, redirectUrl, responseTypes, extensionProperties);
-		User princ = new User(clientId, "", true, true, true, true, authorities);
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
-        OAuth2Authentication auth = new OAuth2Authentication(req, authenticationToken);
+		var princ = new User(clientId, "", true, true, true, true, authorities);
+		var authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
+        var auth = new OAuth2Authentication(req, authenticationToken);
         return tokenServices().createAccessToken(auth);
 	}
 	
 	public OAuth2AccessToken generateUiToken(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		Map<String, String> requestParameters = Collections.emptyMap();
-        boolean approved = true;
+        var approved = true;
         String redirectUrl = null;
         Set<String> responseTypes = Collections.emptySet();
         Map<String, Serializable> extensionProperties = Collections.emptyMap();
-        Set<String> scopes = new HashSet<>();
+        var scopes = new HashSet<String>();
         scopes.add("ui");
-        Set<String> resourceIds = new HashSet<>();
+        var resourceIds = new HashSet<String>();
         resourceIds.add("itb-baby");
 		 
-		OAuth2Request req = new OAuth2Request(requestParameters, username, authorities, approved, scopes,
+		var req = new OAuth2Request(requestParameters, username, authorities, approved, scopes,
                 resourceIds, redirectUrl, responseTypes, extensionProperties);
-		User princ = new User(username, password, true, true, true, true, authorities);
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
-        OAuth2Authentication auth = new OAuth2Authentication(req, authenticationToken);
+		var princ = new User(username, password, true, true, true, true, authorities);
+		var authenticationToken = new UsernamePasswordAuthenticationToken(princ, null, authorities);
+        var auth = new OAuth2Authentication(req, authenticationToken);
         return tokenServices().createAccessToken(auth);
 	}
 	
@@ -70,14 +70,14 @@ public class MockOauth2TokenGenerator {
 	}
 	
 	public JwtAccessTokenConverter accessTokenConverter() {
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		var converter = new JwtAccessTokenConverter();
 		converter.setVerifierKey(env.getProperty("itb.verifier-key"));
 		converter.setSigningKey(env.getProperty("itb.signing-key"));
 		return converter;
 	}
 
 	public DefaultTokenServices tokenServices() {
-		DefaultTokenServices services = new DefaultTokenServices();
+		var services = new DefaultTokenServices();
 		services.setTokenStore(jwtTokenStore());
 		services.setTokenEnhancer(accessTokenConverter());
 		services.setSupportRefreshToken(true);

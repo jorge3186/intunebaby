@@ -23,7 +23,9 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+import graphql.schema.GraphQLCodeRegistry;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 
 public class GraphControllerTest {
 
@@ -48,29 +50,49 @@ public class GraphControllerTest {
 						return errors();
 					} else if ("empty errors".equals(init)) {
 						return emptyResponse();
+					} else if ("auth errors".endsWith(init)) {
+						return deniedErrors();
 					} else {
 						return validResponse();
 					}
 				}});
+		
+		Mockito.when(schema.getCodeRegistry())
+			.thenReturn(GraphQLCodeRegistry.newCodeRegistry().build());
+		Mockito.when(schema.getAllTypesAsList())
+			.thenReturn(new ArrayList<GraphQLType>());
 	}
 	
 	@Test
 	public void testErrorsFormatted() throws JsonProcessingException {
-		ResponseEntity<Object> obj = tested.graphQL("show errors");
+		var obj = tested.graphQL("show errors");
 		Assert.assertTrue(HttpStatus.BAD_REQUEST.equals(obj.getStatusCode()));
 		Assert.assertTrue(new ObjectMapper().writeValueAsString(obj.getBody()).contains("\"message\":\"InvalidSyntax\""));
 	}
 	
 	@Test
 	public void testEmptyErrors() throws JsonProcessingException {
-		ResponseEntity<Object> obj = tested.graphQL("empty errors");
+		var obj = tested.graphQL("empty errors");
 		Assert.assertTrue(HttpStatus.OK.equals(obj.getStatusCode()));
 	}
 	
 	@Test
 	public void testNullRequest() {
-		ResponseEntity<Object> obj = tested.graphQL(null);
+		var obj = tested.graphQL(null);
 		Assert.assertTrue(HttpStatus.BAD_REQUEST.equals(obj.getStatusCode()));
+	}
+	
+	@Test
+	public void testAuthRequest() {
+		var obj = tested.graphQL("auth errors");
+		Assert.assertTrue(HttpStatus.FORBIDDEN.equals(obj.getStatusCode()));
+	}
+	
+	@Test
+	public void testSchemaPrint() {
+		var obj = tested.graphQLSchema();
+		Assert.assertTrue(HttpStatus.OK.equals(obj.getStatusCode()));
+		System.out.println(obj.getBody());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -100,6 +122,48 @@ public class GraphControllerTest {
 					@Override
 					public ErrorClassification getErrorType() {
 						return ErrorType.InvalidSyntax;
+					}});
+				return errs;
+			}
+
+			@Override
+			public <T> T getData() {
+				return null;
+			}
+
+			@Override
+			public Map<Object, Object> getExtensions() {
+				return null;
+			}
+
+			@Override
+			public Map<String, Object> toSpecification() {
+				Map<String, Object> m = new HashMap<>();
+				m.put("spec1", "val1");
+				m.put("spec2", "val2");
+				return m;
+			}};
+	}
+	
+	private ExecutionResult deniedErrors() {
+		return new ExecutionResult() {
+			@Override
+			public List<GraphQLError> getErrors() {
+				List<GraphQLError> errs = new ArrayList<>();
+				errs.add(new GraphQLError() {
+					private static final long serialVersionUID = -3446602025203616944L;
+					
+					@Override
+					public String getMessage() {
+						return "Access is denied";
+					}
+					@Override
+					public List<SourceLocation> getLocations() {
+						return new ArrayList<>();
+					}
+					@Override
+					public ErrorClassification getErrorType() {
+						return ErrorType.DataFetchingException;
 					}});
 				return errs;
 			}

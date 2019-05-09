@@ -35,7 +35,7 @@ public class ItbGatewayServerTest {
 	@Test
 	public void testActuatorEndpoints() {
 		// allow all access to /actuator/health
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
 		Assert.assertTrue(HttpStatus.OK.equals(resp.getStatusCode()));
 		Assert.assertTrue(resp.getBody().contains("UP"));
 		

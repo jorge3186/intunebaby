@@ -1,7 +1,5 @@
 package com.chunkymonkey.itb.service;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.util.Assert;
 
 import com.chunkymonkey.itb.domain.ItbUser;
 import com.chunkymonkey.itb.repository.UserRepository;
+import com.chunkymonkey.itb.validation.ItbValidator;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,11 +19,14 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository users;
 
 	private final PasswordEncoder encoder;
+
+	private final ItbValidator validator;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository users, PasswordEncoder encoder) {
+	public UserServiceImpl(UserRepository users, PasswordEncoder encoder, ItbValidator validator) {
 		this.users = users;
 		this.encoder = encoder;
+		this.validator = validator;
 	}
 	
 	@Override
@@ -36,12 +38,14 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public ItbUser create(ItbUser user) {
+		Assert.notNull(user, "User cannot be null");
 		users.findById(user.getUsername())
 			.ifPresent(u-> {
 				throw new IllegalArgumentException(
 						String.format("User with username %s already exists", u.getUsername()));
 			});
 		
+		validator.validate(user);
 		logger.info(String.format("new user added with username: %s", user.getUsername()));
 		user.setPassword(encoder.encode(user.getPassword()));
 		return users.save(user);
@@ -49,29 +53,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ItbUser update(ItbUser user) {
-		Optional<ItbUser> current = users.findById(user.getUsername());
-		if (current.isPresent()) {
-			ItbUser u = current.get();
-			u.setAuthorities(user.getAuthorities());
-			if (!u.getPassword().equals(user.getPassword()))
-				u.setPassword(encoder.encode(user.getPassword()));
-			return users.save(u);
-		}
-		return user;
+		Assert.notNull(user, "User cannot be null");
+		var entity = users.findById(user.getUsername())
+			.orElseThrow(() -> new IllegalArgumentException(String.format("No user found with id: %s", user.getUsername())));
+		
+		validator.validate(user);
+		entity.setAuthorities(user.getAuthorities());
+		if (!entity.getPassword().equals(user.getPassword()) && !encoder.matches(user.getPassword(), entity.getPassword()))
+			entity.setPassword(encoder.encode(user.getPassword()));
+			users.save(entity);
+		return entity;
 	}
 
 	@Override
 	public void delete(ItbUser user) {
-		Optional<ItbUser> current = users.findById(user.getUsername());
-		if (current.isPresent())
-			users.delete(user);
+		var entity = users.findById(user.getUsername())
+			.orElseThrow(() -> new IllegalArgumentException(String.format("No user found with id: %s", user.getUsername())));
+		users.delete(entity);
 	}
 
 	@Override
 	public void delete(String username) {
-		Optional<ItbUser> current = users.findById(username);
-		if (current.isPresent())
-			users.deleteById(username);
+		var entity = users.findById(username)
+			.orElseThrow(() -> new IllegalArgumentException(String.format("No user found with id: %s", username)));
+		users.delete(entity);
 	}
 
 }

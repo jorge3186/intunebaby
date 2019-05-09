@@ -3,6 +3,9 @@ package com.chunkymonkey.itb.domain;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,16 +15,22 @@ public class BabyEntity {
 	@Id
 	private BigInteger id;
 	
+	@NotNull
 	private String accountName;
 	
+	@Past
+	@NotNull
 	private LocalDateTime birthday;
 	
+	@NotNull
 	private String firstName;
 	
 	private String middleName;
 	
+	@NotNull
 	private String lastName;
 	
+	@NotNull
 	private Gender gender;
 
 	public BigInteger getId() {

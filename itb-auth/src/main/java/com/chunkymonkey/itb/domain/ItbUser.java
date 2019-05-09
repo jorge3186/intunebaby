@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -19,15 +20,18 @@ public class ItbUser implements UserDetails {
 
 	private static final long serialVersionUID = 3268483053777667114L;
 
-	@Id
+	@Id 
+	@NotNull
 	private String username;
 	
+	@NotNull
 	private String password;
 	
 	@Indexed
 	@Email(message = "Email is not valid")
 	private String email;
 	
+	@NotNull
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public ItbUser() {}

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -35,7 +34,7 @@ public class UsersGraphQLService {
 	
 	@GraphQLQuery(description = "Get the current authentication object")
 	public ItbAuthentication me() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		var auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && OAuth2Authentication.class.isAssignableFrom(auth.getClass()))
 			return new ItbAuthentication((OAuth2Authentication)auth);
 		return null;
@@ -43,11 +42,11 @@ public class UsersGraphQLService {
 	
 	@GraphQLQuery(description = "Get the principal of the current user")
 	public Map<String, Object> principal(@GraphQLContext ItbAuthentication authentication) {
-		Map<String, Object> map = new HashMap<>();
+		var map = new HashMap<String, Object>();
 		if (authentication != null) {
-			Object princ = authentication.getPrincipal();
+			var princ = authentication.getPrincipal();
 			if (princ != null && princ instanceof User) {
-				User user = (User)princ;
+				var user = (User)princ;
 				map.put("username", user.getUsername());
 				map.put("authorities", user.getAuthorities() == null ? new ArrayList<>() : 
 					user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList()));

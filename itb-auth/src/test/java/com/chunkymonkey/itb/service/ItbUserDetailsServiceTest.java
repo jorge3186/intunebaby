@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -37,14 +36,14 @@ public class ItbUserDetailsServiceTest {
 	
 	@Test
 	public void testUserLoaded() {
-		UserDetails user = tested.loadUserByUsername("user");
+		var user = tested.loadUserByUsername("user");
 		Assert.assertTrue(user instanceof ItbUser);
 		Assert.assertTrue("username".equals(((ItbUser)user).getUsername()));
 		Assert.assertTrue("email@example.com".equals(((ItbUser)user).getEmail()));
 	}
 	
 	private Optional<ItbUser> mockRepoFind() {
-		ItbUser u = new ItbUser();
+		var u = new ItbUser();
 		u.setUsername("username");
 		u.setEmail("email@example.com");
 		return Optional.of(u);

@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -34,7 +33,7 @@ public class ItbConfigServerTest {
 	@Test
 	public void testConfigCallSecurity() {
 		// allow all access to /actuator/health
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
 		Assert.assertTrue(HttpStatus.OK.equals(resp.getStatusCode()));
 		Assert.assertTrue(resp.getBody().contains("UP"));
 		
@@ -51,7 +50,7 @@ public class ItbConfigServerTest {
 	
 	@Test
 	public void testGetConfigItems() {
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/application", String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/application", String.class);
 		Assert.assertTrue(HttpStatus.UNAUTHORIZED.equals(resp.getStatusCode()));
 		
 		resp = this.restTemplate.withBasicAuth("user", "password").getForEntity("http://localhost:" + port + "/myclient/local", String.class);

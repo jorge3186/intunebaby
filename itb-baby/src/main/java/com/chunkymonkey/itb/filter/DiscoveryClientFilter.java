@@ -20,8 +20,8 @@ private final String username;
 
 	@Override
 	public ClientResponse handle(ClientRequest cr) throws ClientHandlerException {
-		String auth = username + ":" + password;
-		String encoded = Base64Utils.encodeToString(auth.getBytes());
+		var auth = username + ":" + password;
+		var encoded = Base64Utils.encodeToString(auth.getBytes());
 		cr.getHeaders().add("Authorization", String.format("Basic %s", encoded));
 		
 		return getNext() == null ? null : getNext().handle(cr);

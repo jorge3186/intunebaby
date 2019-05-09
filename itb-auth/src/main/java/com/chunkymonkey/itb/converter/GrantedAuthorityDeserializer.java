@@ -15,7 +15,7 @@ public class GrantedAuthorityDeserializer extends JsonDeserializer<GrantedAuthor
 	@Override
 	public GrantedAuthority deserialize(JsonParser p, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
-		String value = p.getValueAsString();
+		var value = p.getValueAsString();
 		if (value == null || value == "")
 			return null;
 		return new SimpleGrantedAuthority(value);

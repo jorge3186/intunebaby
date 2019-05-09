@@ -1,8 +1,12 @@
 package com.chunkymonkey.itb.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Validation;
+import javax.validation.ValidationException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.chunkymonkey.itb.domain.ItbUser;
 import com.chunkymonkey.itb.repository.UserRepository;
+import com.chunkymonkey.itb.validation.ItbValidator;
+import com.chunkymonkey.itb.validation.ItbValidatorImpl;
 
 public class UserServiceTest {
 	
@@ -24,16 +30,20 @@ public class UserServiceTest {
 	
 	private UserService tested;
 	
+	private ItbValidator validator;
+	
 	private List<ItbUser> mockList = new ArrayList<>();
 	
 	@Before
 	public void setup() {
 		repo = Mockito.mock(UserRepository.class);
 		encoder = new BCryptPasswordEncoder();
-		tested = new UserServiceImpl(repo, encoder);
+		validator = new ItbValidatorImpl(Validation.buildDefaultValidatorFactory().getValidator());
+		
+		tested = new UserServiceImpl(repo, encoder, validator);
 		
 		mockList.add(existingUser().get());
-		ItbUser u2 = existingUser().get();
+		var u2 = existingUser().get();
 		u2.setUsername("another-user");
 		mockList.add(u2);
 		
@@ -49,7 +59,7 @@ public class UserServiceTest {
 		Mockito.doAnswer(new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {
-				ItbUser u = (ItbUser)invocation.getArgument(0);
+				ItbUser u = invocation.getArgument(0);
 				mockList.remove(u);
 				return null;
 			}
@@ -58,8 +68,8 @@ public class UserServiceTest {
 		Mockito.doAnswer(new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {
-				String uname = (String)invocation.getArgument(0);
-				Optional<ItbUser> opt = mockList.stream()
+				String uname = invocation.getArgument(0);
+				var opt = mockList.stream()
 					.filter(u -> uname.equals(u.getUsername()))
 					.findAny();
 				if (opt.isPresent())
@@ -73,13 +83,13 @@ public class UserServiceTest {
 	
 	@Test
 	public void findUserByUserName() {
-		ItbUser user = tested.findByUserName("existing-user");
+		var user = tested.findByUserName("existing-user");
 		Assert.assertTrue("email@example.com".equals(user.getEmail()));
 	}
 	
 	@Test
 	public void findNonUserByName() {
-		ItbUser user = tested.findByUserName("empty-user");
+		var user = tested.findByUserName("empty-user");
 		Assert.assertTrue(user == null);
 	}
 	
@@ -90,73 +100,90 @@ public class UserServiceTest {
 	
 	@Test
 	public void testCreateValidUser() {
-		ItbUser user = existingUser().get();
+		var user = existingUser().get();
 		user.setUsername("new-user");
-		String rawPw = user.getPassword();
-		ItbUser created = tested.create(user);
+		var rawPw = user.getPassword();
+		var created = tested.create(user);
 		
 		Assert.assertTrue("new-user".equals(created.getUsername()));
 		Assert.assertTrue("email@example.com".equals(created.getEmail()));
 		Assert.assertTrue(encoder.matches(rawPw, created.getPassword()));
 	}
 	
+	@Test(expected = ValidationException.class)
+	public void testCreateInvalidUser() {
+		var user = existingInvalidUser().get();
+		user.setUsername("new-user");
+		tested.create(user);
+	}
+	
 	@Test
 	public void testUpdateExistingUser() {
-		ItbUser user = existingUser().get();
+		var user = existingUser().get();
 		user.setPassword("newpassword");
-		ItbUser updated = tested.update(user);
+		var updated = tested.update(user);
 		
 		Assert.assertTrue("existing-user".equals(updated.getUsername()));
 		Assert.assertTrue(encoder.matches("newpassword", updated.getPassword()));
 	}
 	
-	@Test
+	@Test(expected = ValidationException.class)
+	public void testUpdateInvalidExistingUser() {
+		var user = existingInvalidUser().get();
+		user.setPassword("newpassword");
+		tested.update(user);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateNonExistentUser() {
-		ItbUser user = existingUser().get();
+		var user = existingUser().get();
 		user.setUsername("new-user");
 		user.setPassword("newpassword");
-		ItbUser updated = tested.update(user);
-		
-		Assert.assertTrue("new-user".equals(updated.getUsername()));
-		// encoding process is skipped if user does not exists
-		Assert.assertTrue("newpassword".equals(updated.getPassword()));
+		tested.update(user);
 	}
 	
 	@Test
 	public void deleteValidUser() {
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
+		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
 		tested.delete(existingUser().get());
-		Assert.assertTrue(new Integer(1).equals(mockList.size()));
+		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void deleteNonExistentUser() {
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
-		ItbUser user = existingUser().get();
+		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
+		var user = existingUser().get();
 		user.setUsername("new-user");
 		tested.delete(user);
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
 	}
 	
 	@Test
 	public void deleteUserByUsername() {
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
+		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
 		tested.delete("existing-user");
-		Assert.assertTrue(new Integer(1).equals(mockList.size()));
+		Assert.assertTrue(Integer.valueOf(1).equals(mockList.size()));
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void deleteNonExistentUserByUsername() {
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
+		Assert.assertTrue(Integer.valueOf(2).equals(mockList.size()));
 		tested.delete("noone");
-		Assert.assertTrue(new Integer(2).equals(mockList.size()));
 	}
 	
 	private Optional<ItbUser> existingUser() {
-		ItbUser user = new ItbUser();
+		var user = new ItbUser();
 		user.setUsername("existing-user");
 		user.setPassword("supersecret");
 		user.setEmail("email@example.com");
+		user.setAuthorities(Collections.emptyList());
+		return Optional.of(user);
+	}
+	
+	private Optional<ItbUser> existingInvalidUser() {
+		var user = new ItbUser();
+		user.setUsername("existing-user");
+		user.setPassword("supersecret");
+		user.setEmail("emailexamplecom");
 		return Optional.of(user);
 	}
 

@@ -24,7 +24,7 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
 	
 	@Bean @Primary
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		var converter = new JwtAccessTokenConverter();
 		converter.setVerifierKey(env.getProperty("itb.verifier-key"));
 		converter.setSigningKey(env.getProperty("itb.signing-key"));
 		return converter;
@@ -38,7 +38,7 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
 	
 	@Bean @Primary
 	public ResourceServerTokenServices tokenServices() {
-		DefaultTokenServices services = new DefaultTokenServices();
+		var services = new DefaultTokenServices();
 		services.setTokenStore(jwtTokenStore());
 		services.setSupportRefreshToken(true);
 		return services;
