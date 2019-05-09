@@ -1,3 +1,10 @@
+// Assign an ext property if none is passed at build time
+def defaultProperty(String name, defaultValue) {
+	if (!hasProperty(name)) {
+		ext."$name" = defaultValue
+	}
+}
+
 subprojects {
 	
 	buildscript {
@@ -16,11 +23,11 @@ subprojects {
 			mockitoVersion				=	'2.27.0'
 			embededMongoVersion			=	'2.2.0'
 			
-			javaVersion					=	'1.8'
-			
-			appVersion					=	'0.0.1-SNAPSHOT'
+			javaVersion					=	'11'
 			
 		}
+		
+		defaultProperty 'appVersion', '0.0.1-SNAPSHOT'
 		
 		repositories {
 			mavenCentral()

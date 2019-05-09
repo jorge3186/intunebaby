@@ -58,7 +58,7 @@ public class GraphControllerTest {
 	public void testErrorsFormatted() throws JsonProcessingException {
 		ResponseEntity<Object> obj = tested.graphQL("show errors");
 		Assert.assertTrue(HttpStatus.BAD_REQUEST.equals(obj.getStatusCode()));
-		Assert.assertTrue(new ObjectMapper().writeValueAsString(obj.getBody()).contains("\"errorType\":\"InvalidSyntax\""));
+		Assert.assertTrue(new ObjectMapper().writeValueAsString(obj.getBody()).contains("\"message\":\"InvalidSyntax\""));
 	}
 	
 	@Test
