@@ -40,7 +40,7 @@ public class ItbAuthServerTest {
 	@Test
 	public void testActuatorEndpoints() {
 		// allow all access to /actuator/health
-		ResponseEntity<String> resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
+		var resp = this.restTemplate.getForEntity("http://localhost:" + port + "/actuator/health" , String.class);
 		Assert.assertTrue(HttpStatus.OK.equals(resp.getStatusCode()));
 		Assert.assertTrue(resp.getBody().contains("UP"));
 		
@@ -50,15 +50,15 @@ public class ItbAuthServerTest {
 		Assert.assertTrue(resp.getBody().contains("Full authentication is required to access this resource"));
 		
 		// get access token from oauth2
-		ResponseEntity<OAuth2TokenResponse> tokenResp = this.restTemplate
+		var tokenResp = this.restTemplate
 				.withBasicAuth("itb-baby", "password")
 				.postForEntity("http://localhost:" + port + "/oauth/token?grant_type=client_credentials",  new OAuth2Request(), OAuth2TokenResponse.class);
 		Assert.assertTrue(HttpStatus.OK.equals(tokenResp.getStatusCode()));
 		
 		// access to /actuator/** with token auth
-		HttpHeaders headers = new HttpHeaders();
+		var headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + tokenResp.getBody().getAccessToken());
-		HttpEntity<String> request = new HttpEntity<String>(headers);
+		var request = new HttpEntity<String>(headers);
 		resp = this.restTemplate.exchange("http://localhost:" + port + "/actuator/beans", HttpMethod.GET, 
 				request, String.class);
 		Assert.assertTrue(HttpStatus.OK.equals(resp.getStatusCode()));
@@ -67,7 +67,7 @@ public class ItbAuthServerTest {
 	
 	@Test
 	public void testOAuth2() {
-		ResponseEntity<OAuth2TokenResponse> tokenResp = this.restTemplate
+		var tokenResp = this.restTemplate
 				.withBasicAuth("itb-baby", "badpassword")
 				.postForEntity("http://localhost:" + port + "/oauth/token?grant_type=client_credentials",  new OAuth2Request(), OAuth2TokenResponse.class);
 		Assert.assertTrue(HttpStatus.UNAUTHORIZED.equals(tokenResp.getStatusCode()));
